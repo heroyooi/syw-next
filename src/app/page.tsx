@@ -10,7 +10,10 @@ async function getRecentProjects(): Promise<Project[]> {
     limit(3)
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as Project) }));
+  return snapshot.docs.map((d) => {
+    const data = d.data() as Omit<Project, 'id'>;
+    return { ...data, id: d.id };
+  });
 }
 
 export default async function Home() {
