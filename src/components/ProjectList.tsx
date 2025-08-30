@@ -25,7 +25,10 @@ export default function ProjectList() {
         )
       : query(collection(db, 'projects'), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
     const snapshot = await getDocs(q);
-    const docs = snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as Project) }));
+    const docs = snapshot.docs.map((d) => {
+      const data = d.data() as Omit<Project, 'id'>;
+      return { ...data, id: d.id };
+    });
     setProjects((prev) => [...prev, ...docs]);
     const lastVisible = snapshot.docs[snapshot.docs.length - 1] ?? null;
     setLastDoc(lastVisible);
